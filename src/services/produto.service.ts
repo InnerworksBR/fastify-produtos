@@ -32,3 +32,15 @@ export async function buscarProdutoPorId(id: string){
     return produto
 }
 
+export async function atualizarProduto(id: string, nome: string, preco: number){
+
+    const produto = await buscarProdutoPorId(id)
+    if(!produto){
+        return null
+    }
+
+    produto.nome = nome
+    produto.preco = preco
+
+    return produto
+}

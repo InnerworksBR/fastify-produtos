@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { Produto, ProdutoBody } from "../types/produto.types";
-import { buscarProdutoPorId, criarProduto, listarProdutos } from "../services/produto.service";
+import { atualizarProduto, buscarProdutoPorId, criarProduto, listarProdutos } from "../services/produto.service";
 
 export async function listarProdutosController(
     request: FastifyRequest,
@@ -31,7 +31,29 @@ export async function buscarProdutoPorIdController(
 ){
     const id = request.params.id
 
-    const produto =  buscarProdutoPorId(id)
+    const produto =  await buscarProdutoPorId(id)
+    if(!produto){
+        reply.code(404)
+        return { error: 'Produto não encontrado'}
+    }
+
+    reply.code(200)
+    return produto
+}
+
+export async function atualizarProdutoController(
+    request: FastifyRequest<{
+        Params: {id: string},
+        Body: ProdutoBody
+    }>,
+    reply: FastifyReply
+){
+    const id = request.params.id
+    const nome = request.body.nome
+    const preco = request.body.preco
+
+    const produto = await atualizarProduto(id, nome, preco)
+
     if(!produto){
         reply.code(404)
         return { error: 'Produto não encontrado'}
