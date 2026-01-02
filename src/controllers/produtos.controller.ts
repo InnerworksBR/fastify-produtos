@@ -14,6 +14,8 @@ export async function criarProdutoController(
     request: FastifyRequest<{Body: ProdutoBody}>,
     reply: FastifyReply
 ){
+
+    
     const nome = request.body.nome
     const preco = request.body.preco
 

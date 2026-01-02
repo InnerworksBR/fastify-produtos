@@ -7,5 +7,5 @@ export async function produtoRoutes(app: FastifyInstance){
 
     app.get('/produtos', listarProdutosController)
 
-    app.post('/produtos', criarProdutoController)
+    app.post('/produtos', {schema: produtoSchema}, criarProdutoController)
 }

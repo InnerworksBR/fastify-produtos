@@ -3,8 +3,8 @@ export const produtoSchema = {
         type: 'object',
         required: ['nome', 'preco'],
         properties: {
-            nome: {type: 'string'},
-            preco: {type: 'number'}
+            nome: {type: 'string', minLength: 1},
+            preco: {type: 'number', exclusiveMinimum: 0}
         }
     }
 }
