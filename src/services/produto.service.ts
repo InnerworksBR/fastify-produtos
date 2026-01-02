@@ -1,5 +1,6 @@
 import { Produto } from "../types/produto.types"
 
+
 const produtos: Produto[] = []
 
 export async function listarProdutos(){
