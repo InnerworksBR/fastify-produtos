@@ -44,3 +44,15 @@ export async function atualizarProduto(id: string, nome: string, preco: number){
 
     return produto
 }
+
+export async function deletarProduto(id: string){
+
+    const index = produtos.findIndex(p => p.id === id)
+    if(index === -1){
+        return false
+    }
+
+    produtos.splice(index, 1)
+    return true
+
+}

@@ -1,6 +1,6 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { Produto, ProdutoBody } from "../types/produto.types";
-import { atualizarProduto, buscarProdutoPorId, criarProduto, listarProdutos } from "../services/produto.service";
+import { atualizarProduto, buscarProdutoPorId, criarProduto, deletarProduto, listarProdutos } from "../services/produto.service";
 
 export async function listarProdutosController(
     request: FastifyRequest,
@@ -61,4 +61,20 @@ export async function atualizarProdutoController(
 
     reply.code(200)
     return produto
+}
+
+export async function deletarProdutoController(
+    request: FastifyRequest<{ Params: {id: string}}>,
+    reply: FastifyReply
+){
+    const id = request.params.id
+    const produto = await deletarProduto(id)
+
+    if(produto === false){
+        reply.code(404)
+        return { error: 'Produto não encontrado'}
+    }
+
+    reply.code(200)
+    return {message: 'Produto deletado'}
 }
