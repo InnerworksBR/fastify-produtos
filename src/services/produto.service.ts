@@ -1,5 +1,7 @@
 import { Produto } from "../types/produto.types"
+
 const produtos: Produto[] = []
+
 export async function listarProdutos(){
     return produtos
 }
@@ -19,3 +21,14 @@ export async function criarProduto(nome: string, preco: number){
 
     return produto
 }
+
+export async function buscarProdutoPorId(id: string){
+
+    const produto = produtos.find(p => p.id === id)
+
+    if(!produto){
+        return null
+    }
+    return produto
+}
+
