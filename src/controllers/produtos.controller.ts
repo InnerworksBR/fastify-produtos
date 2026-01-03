@@ -1,12 +1,14 @@
 import {FastifyReply, FastifyRequest } from "fastify";
 import { ProdutoBody } from "../types/produto.types";
 import { atualizarProduto, buscarProdutoPorId, criarProduto, deletarProduto, listarProdutos } from "../services/produto.service";
+import { mapProdutoToResponse } from "../mappers/produto.mapper";
 
 export async function listarProdutosController(
     request: FastifyRequest,
     reply: FastifyReply
 ){
-    return await listarProdutos()
+    const produtos = await listarProdutos()
+    return produtos.map(mapProdutoToResponse)
 }
 
 export async function criarProdutoController(
@@ -17,7 +19,7 @@ export async function criarProdutoController(
     const produto = await criarProduto(request.body)
     
     reply.code(201)
-    return produto
+    return mapProdutoToResponse
 }
 
 export async function buscarProdutoPorIdController(

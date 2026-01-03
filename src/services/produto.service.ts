@@ -1,6 +1,7 @@
 import { Produto, ProdutoBody } from "../types/produto.types"
 import { prisma } from "../lib/prisma"
 import { AppError } from "../errors/AppError"
+import { mapProdutoToResponse } from "../mappers/produto.mapper"
 
 
 export async function listarProdutos(): Promise <Produto[]>{
@@ -21,12 +22,14 @@ export async function criarProduto(body: ProdutoBody): Promise<Produto>{
         throw new AppError('Preço acima do permitido', 400)
     }
     
-    return await prisma.produto.create({
+    const produto = await prisma.produto.create({
         data: {
             nome: body.nome,
             preco: body.preco
         }
     })
+
+    return mapProdutoToResponse(produto)
 }
 
 export async function buscarProdutoPorId(id: string): Promise<Produto>{
