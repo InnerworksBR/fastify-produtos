@@ -1,5 +1,6 @@
 import fastify from 'fastify'
 import { produtoRoutes } from './routes/produto.routes'
+import 'dotenv/config'
 
 const app = fastify({ logger:true })
 

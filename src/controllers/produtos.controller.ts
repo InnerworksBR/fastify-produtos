@@ -1,5 +1,5 @@
-import fastify, { FastifyReply, FastifyRequest } from "fastify";
-import { Produto, ProdutoBody } from "../types/produto.types";
+import {FastifyReply, FastifyRequest } from "fastify";
+import { ProdutoBody } from "../types/produto.types";
 import { atualizarProduto, buscarProdutoPorId, criarProduto, deletarProduto, listarProdutos } from "../services/produto.service";
 
 export async function listarProdutosController(
@@ -15,11 +15,7 @@ export async function criarProdutoController(
     reply: FastifyReply
 ){
 
-    
-    const nome = request.body.nome
-    const preco = request.body.preco
-
-    const produto = await criarProduto(nome, preco)
+    const produto = await criarProduto(request.body)
     
     reply.code(201)
     return produto
@@ -52,7 +48,7 @@ export async function atualizarProdutoController(
     const nome = request.body.nome
     const preco = request.body.preco
 
-    const produto = await atualizarProduto(id, nome, preco)
+    const produto = await atualizarProduto(id, request.body)
 
     if(!produto){
         reply.code(404)

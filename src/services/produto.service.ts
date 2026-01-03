@@ -1,31 +1,24 @@
-import { Produto } from "../types/produto.types"
+import { Produto, ProdutoBody } from "../types/produto.types"
+import { prisma } from "../lib/prisma"
 
 
-const produtos: Produto[] = []
-
-export async function listarProdutos(){
-    return produtos
+export async function listarProdutos(): Promise <Produto[]>{
+    return prisma.produto.findMany()
 }
 
 
-export async function criarProduto(nome: string, preco: number){
-
-    const id = String(produtos.length + 1)
-
-    const produto: Produto = {
-        id: id,
-        nome: nome,
-        preco: preco
-    }
-
-    produtos.push(produto)
-
-    return produto
+export async function criarProduto(body: ProdutoBody): Promise<Produto>{
+    return await prisma.produto.create({
+        data: {
+            nome: body.nome,
+            preco: body.preco
+        }
+    })
 }
 
-export async function buscarProdutoPorId(id: string){
+export async function buscarProdutoPorId(id: string): Promise<Produto | null>{
 
-    const produto = produtos.find(p => p.id === id)
+    const produto = await prisma.produto.findUnique({ where: {id}})
 
     if(!produto){
         return null
@@ -33,27 +26,34 @@ export async function buscarProdutoPorId(id: string){
     return produto
 }
 
-export async function atualizarProduto(id: string, nome: string, preco: number){
+export async function atualizarProduto(id: string, body: ProdutoBody): Promise <Produto | null>{
 
     const produto = await buscarProdutoPorId(id)
+
     if(!produto){
         return null
     }
 
-    produto.nome = nome
-    produto.preco = preco
+    const produtoAtualizado = await prisma.produto.update({
+        where: { id },
+        data: {
+            nome: body.nome,
+            preco: body.preco
+        }
+    })
 
-    return produto
+    return produtoAtualizado
 }
 
-export async function deletarProduto(id: string){
+export async function deletarProduto(id: string): Promise<boolean>{
 
-    const index = produtos.findIndex(p => p.id === id)
-    if(index === -1){
+    const produto = buscarProdutoPorId(id)
+    if (!produto) {
         return false
     }
 
-    produtos.splice(index, 1)
+    await prisma.produto.delete({ where: {id}})
+
     return true
 
 }
