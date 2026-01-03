@@ -9,6 +9,18 @@ export async function listarProdutos(): Promise <Produto[]>{
 
 
 export async function criarProduto(body: ProdutoBody): Promise<Produto>{
+    
+    const PRECO_MAXIMO = 100
+    const existe = await produtoJaExiste(body.nome)
+
+    if(existe){
+        throw new AppError('Produto com este nome ja existe', 409)
+    }
+
+    if(body.preco > PRECO_MAXIMO){
+        throw new AppError('Preço acima do permitido', 400)
+    }
+    
     return await prisma.produto.create({
         data: {
             nome: body.nome,
@@ -46,15 +58,29 @@ export async function atualizarProduto(id: string, body: ProdutoBody): Promise <
     return produtoAtualizado
 }
 
-export async function deletarProduto(id: string): Promise<boolean>{
+export async function deletarProduto(id: string): Promise<void>{
 
     const produto = await buscarProdutoPorId(id)
+
     if (!produto) {
         throw new AppError('Produto não encontrado', 404)
     }
 
+    const emUso = false//Simulação
+
+    if(emUso){
+        throw new AppError('Produto não pode ser removido', 409)
+    }
+
     await prisma.produto.delete({ where: {id}})
 
-    return true
 
+}
+
+async function produtoJaExiste(nome: string): Promise<boolean>{
+    const produto = await prisma.produto.findFirst({
+        where: {nome: nome}
+    })
+
+    return !!produto
 }

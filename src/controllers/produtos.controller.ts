@@ -6,7 +6,6 @@ export async function listarProdutosController(
     request: FastifyRequest,
     reply: FastifyReply
 ){
-    reply.code(200)
     return await listarProdutos()
 }
 
@@ -26,10 +25,8 @@ export async function buscarProdutoPorIdController(
     reply: FastifyReply
 ){
     const id = request.params.id
-
     const produto =  await buscarProdutoPorId(id)
 
-    reply.code(200)
     return produto
 }
 
@@ -41,15 +38,8 @@ export async function atualizarProdutoController(
     reply: FastifyReply
 ){
     const id = request.params.id
-
     const produto = await atualizarProduto(id, request.body)
 
-    if(!produto){
-        reply.code(404)
-        return { error: 'Produto não encontrado'}
-    }
-
-    reply.code(200)
     return produto
 }
 
@@ -61,6 +51,5 @@ export async function deletarProdutoController(
     
     await deletarProduto(id)
 
-    reply.code(200)
     return {message: 'Produto deletado'}
 }
