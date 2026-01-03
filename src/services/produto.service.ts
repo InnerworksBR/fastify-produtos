@@ -1,5 +1,6 @@
 import { Produto, ProdutoBody } from "../types/produto.types"
 import { prisma } from "../lib/prisma"
+import { AppError } from "../errors/AppError"
 
 
 export async function listarProdutos(): Promise <Produto[]>{
@@ -16,22 +17,22 @@ export async function criarProduto(body: ProdutoBody): Promise<Produto>{
     })
 }
 
-export async function buscarProdutoPorId(id: string): Promise<Produto | null>{
+export async function buscarProdutoPorId(id: string): Promise<Produto>{
 
     const produto = await prisma.produto.findUnique({ where: {id}})
 
-    if(!produto){
-        return null
+    if (!produto) {
+        throw new AppError('Produto não encontrado', 404)
     }
     return produto
 }
 
-export async function atualizarProduto(id: string, body: ProdutoBody): Promise <Produto | null>{
+export async function atualizarProduto(id: string, body: ProdutoBody): Promise <Produto>{
 
     const produto = await buscarProdutoPorId(id)
 
-    if(!produto){
-        return null
+     if (!produto) {
+        throw new AppError('Produto não encontrado', 404)
     }
 
     const produtoAtualizado = await prisma.produto.update({
@@ -47,9 +48,9 @@ export async function atualizarProduto(id: string, body: ProdutoBody): Promise <
 
 export async function deletarProduto(id: string): Promise<boolean>{
 
-    const produto = buscarProdutoPorId(id)
+    const produto = await buscarProdutoPorId(id)
     if (!produto) {
-        return false
+        throw new AppError('Produto não encontrado', 404)
     }
 
     await prisma.produto.delete({ where: {id}})

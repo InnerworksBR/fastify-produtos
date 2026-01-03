@@ -28,10 +28,6 @@ export async function buscarProdutoPorIdController(
     const id = request.params.id
 
     const produto =  await buscarProdutoPorId(id)
-    if(!produto){
-        reply.code(404)
-        return { error: 'Produto não encontrado'}
-    }
 
     reply.code(200)
     return produto
@@ -45,8 +41,6 @@ export async function atualizarProdutoController(
     reply: FastifyReply
 ){
     const id = request.params.id
-    const nome = request.body.nome
-    const preco = request.body.preco
 
     const produto = await atualizarProduto(id, request.body)
 
@@ -64,12 +58,8 @@ export async function deletarProdutoController(
     reply: FastifyReply
 ){
     const id = request.params.id
-    const produto = await deletarProduto(id)
-
-    if(produto === false){
-        reply.code(404)
-        return { error: 'Produto não encontrado'}
-    }
+    
+    await deletarProduto(id)
 
     reply.code(200)
     return {message: 'Produto deletado'}
